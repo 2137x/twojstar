@@ -9,8 +9,8 @@ Shared home for Paint.NET extensions maintained in this repository.
 
 Stable release assets remain separate so users can install only what they need:
 
-- [`paintdotnet-ico.zip`](https://github.com/2137x/twojstar/releases/latest/download/paintdotnet-ico.zip)
-- [`paintdotnet-ai.zip`](https://github.com/2137x/twojstar/releases/latest/download/paintdotnet-ai.zip)
+- [`paintdotnet-ico.zip`](https://github.com/travnie/twojstar/releases/latest/download/paintdotnet-ico.zip)
+- [`paintdotnet-ai.zip`](https://github.com/travnie/twojstar/releases/latest/download/paintdotnet-ai.zip)
 
 ## Direction
 
