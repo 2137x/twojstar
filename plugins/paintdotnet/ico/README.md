@@ -4,9 +4,9 @@ Dependency-free `.ico` file type plugin for Paint.NET 5.1 and 5.2+.
 
 ## Download
 
-[**Download the latest release (`paintdotnet-ico.zip`)**](https://github.com/twojstar/twojstar/releases/latest/download/paintdotnet-ico.zip)
+[**Download the latest release (`paintdotnet-ico.zip`)**](https://github.com/2137x/twojstar/releases/latest/download/paintdotnet-ico.zip)
 
-The ZIP contains separate folders for Paint.NET 5.2+ and Paint.NET 5.1.x plus `Install.bat`. It is published in the shared `twojstar/twojstar` rolling Latest release, so the download URL stays stable without a plugin-specific release tag.
+The ZIP contains separate folders for Paint.NET 5.2+ and Paint.NET 5.1.x plus `Install.bat`. It is published in the shared `2137x/twojstar` rolling Latest release, so the download URL stays stable without a plugin-specific release tag.
 
 ## What it does
 
