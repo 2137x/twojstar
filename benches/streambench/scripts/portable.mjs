@@ -71,7 +71,7 @@ for (const match of [...html.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*hr
 }
 html = html.replace("</head>", `<style data-portable-styles>\n${styles.join("\n")}\n</style>\n</head>`);
 
-for (const name of ["i18n-runtime.js", "i18n.js"]) {
+for (const name of ["i18n-runtime.js", "i18n.js", "webmcp-lifecycle.js"]) {
   const tag = new RegExp(`<script\\s+src=["']\\/?${name.replace(".", "\\.")}["']\\s*><\\/script>\\s*`, "i");
   if (!tag.test(html)) throw new Error(`missing script tag: ${name}`);
   html = html.replace(tag, `<script data-portable-source="${name}">\n${inlineScript(await readFile(join(publicDir, name), "utf8"))}\n</script>\n`);
@@ -89,7 +89,7 @@ if (!entryModules.includes("webmcp.js")) throw new Error("WebMCP module entry po
 html = html.replace(/<script\b[^>]*type=["']module["'][^>]*src=["'][^"']+["'][^>]*><\/script>\s*/gi, "");
 
 const moduleFiles = (await readdir(publicDir, { withFileTypes: true }))
-  .filter((entry) => entry.isFile() && entry.name.endsWith(".js") && !entry.name.startsWith("i18n"))
+  .filter((entry) => entry.isFile() && entry.name.endsWith(".js") && !entry.name.startsWith("i18n") && entry.name !== "webmcp-lifecycle.js")
   .map((entry) => entry.name)
   .sort();
 const imports = {};

@@ -68,6 +68,7 @@ globalThis.StreambenchUi = {
   stopPlayback: () => { calls.push(["stop"]); return { ok: true }; },
 };
 
+await import(`../public/webmcp-lifecycle.js?check=${Date.now()}`);
 await import(`../public/webmcp.js?check=${Date.now()}`);
 assert.deepEqual([...tools.keys()].sort(), [
   "read_stream_state",
@@ -84,6 +85,7 @@ assert.deepEqual(calls, [["start", 7], ["stop"]]);
 assert.equal(tools.get("start_stream_playback").execute({ index: -1 }).ok, false);
 
 delete globalThis.StreambenchUi;
+delete globalThis.BenchWebMcp;
 delete globalThis.window;
 delete globalThis.document;
 console.log("WebMCP behavior checks passed");

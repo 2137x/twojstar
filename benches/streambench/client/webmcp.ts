@@ -7,19 +7,9 @@
   const ui = globalThis.StreambenchUi;
   if (!ui) return;
 
-  const lifecycle = new AbortController();
-  const register = (tool) => {
-    try {
-      Promise.resolve(context.registerTool(tool, { signal: lifecycle.signal }))
-        .catch((error) => console.warn("Streambench WebMCP registration failed", error));
-    } catch (error) {
-      console.warn("Streambench WebMCP registration failed", error);
-    }
-  };
-
-  window.addEventListener("pagehide", (event) => {
-    if (!event.persisted) lifecycle.abort();
-  });
+  const registration = globalThis.BenchWebMcp?.createRegistrationLifecycle(context, "Streambench");
+  if (!registration) return;
+  const { register } = registration;
 
   register({
     name: "read_stream_state",

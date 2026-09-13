@@ -35,6 +35,7 @@ const llmsFull = readFileSync(join(root, "public", "llms-full.txt"), "utf8");
 const indexMarkdown = readFileSync(join(root, "public", "index.md"), "utf8");
 const index = readFileSync(join(root, "public", "index.html"), "utf8");
 const portable = readFileSync(join(root, "public", "portable.html"), "utf8");
+const webmcpLifecycle = readFileSync(join(root, "public", "webmcp-lifecycle.js"), "utf8");
 const webmcp = readFileSync(join(root, "public", "webmcp.js"), "utf8");
 
 if (!source.includes('const SITE_URL = "https://codebench.trfny.com/";')) {
@@ -49,7 +50,9 @@ if (!llms.includes("https://codebench.trfny.com/index.md")) throw new Error("llm
 if (!llms.includes("https://codebench.trfny.com/llms-full.txt")) throw new Error("llms.txt full guide URL is missing");
 if (!indexMarkdown.startsWith("# Code Bench")) throw new Error("index.md is missing its H1");
 if (!llmsFull.startsWith("# Code Bench full documentation")) throw new Error("llms-full.txt is missing its H1");
+if (!index.includes('<script src="webmcp-lifecycle.js"></script>')) throw new Error("WebMCP lifecycle script is missing");
 if (!index.includes('<script src="webmcp.js"></script>')) throw new Error("WebMCP page script is missing");
+if (!webmcpLifecycle.includes("createRegistrationLifecycle")) throw new Error("Shared WebMCP lifecycle helper is missing");
 if (!index.includes("generation!==qrRenderGeneration") || !index.includes("lastQrContent=data")) throw new Error("QR payload cache is not gated by successful current-generation rendering");
 if (!webmcp.includes("QR render failed")) throw new Error("WebMCP QR guarded-render error handling is missing");
 if (!index.includes("ensureQrRendered:async") || !index.includes("await qrRenderPromise")) throw new Error("QR async render readiness bridge is missing");

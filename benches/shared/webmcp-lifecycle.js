@@ -1,0 +1,26 @@
+"use strict";
+
+(() => {
+  function createRegistrationLifecycle(context, label) {
+    if (!context?.registerTool) return null;
+
+    const lifecycle = new AbortController();
+    const warning = `${label} WebMCP registration failed`;
+    const register = (tool) => {
+      try {
+        Promise.resolve(context.registerTool(tool, { signal: lifecycle.signal }))
+          .catch((error) => console.warn(warning, error));
+      } catch (error) {
+        console.warn(warning, error);
+      }
+    };
+
+    window.addEventListener("pagehide", (event) => {
+      if (!event.persisted) lifecycle.abort();
+    });
+
+    return Object.freeze({ register });
+  }
+
+  globalThis.BenchWebMcp = Object.freeze({ createRegistrationLifecycle });
+})();

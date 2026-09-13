@@ -5,19 +5,9 @@
   const context = document.modelContext;
   if (!context?.registerTool) return;
 
-  const lifecycle = new AbortController();
-  const register = (tool) => {
-    try {
-      Promise.resolve(context.registerTool(tool, { signal: lifecycle.signal }))
-        .catch((error) => console.warn("Docbench WebMCP registration failed", error));
-    } catch (error) {
-      console.warn("Docbench WebMCP registration failed", error);
-    }
-  };
-
-  window.addEventListener("pagehide", (event) => {
-    if (!event.persisted) lifecycle.abort();
-  });
+  const registration = globalThis.BenchWebMcp?.createRegistrationLifecycle(context, "Docbench");
+  if (!registration) return;
+  const { register } = registration;
 
   const editor = document.querySelector("#editor");
   const formatSelect = document.querySelector("#format-select");
