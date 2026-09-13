@@ -28,7 +28,7 @@ three builds.
 
 This workspace was extracted from [`trvny/trvny`](https://github.com/trvny/trvny)
 with its filtered `benches/` Git history preserved. Active development now lives
-in [`2137x/twojstar`](https://github.com/2137x/twojstar).
+in [`enclaro/twojstar`](https://github.com/enclaro/twojstar).
 
 The migrated Bench workspace remains licensed under [ISC](LICENSE). The root
 workshop repository may use a different license for other components.

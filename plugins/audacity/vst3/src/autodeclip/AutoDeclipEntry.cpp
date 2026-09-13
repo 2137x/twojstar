@@ -8,7 +8,7 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-BEGIN_FACTORY_DEF("Travny", "https://github.com/2137x/twojstar", "")
+BEGIN_FACTORY_DEF("Travny", "https://github.com/enclaro/twojstar", "")
 
     DEF_CLASS2(INLINE_UID_FROM_FUID(Travny::Vst3::kAutoDeclipProcessorUid),
                PClassInfo::kManyInstances,

@@ -79,7 +79,7 @@ Current observations are refreshed on the Worker schedule and health status trac
 ## Related
 
 - [TRAVNY hub](https://trfny.com/)
-- [Source](https://github.com/2137x/twojstar/tree/main/weather-feed)
+- [Source](https://github.com/enclaro/twojstar/tree/main/weather-feed)
 `;
 
 const K = {

@@ -6,7 +6,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $expectedIdentity = 'trvny.Feedboard'
-$attestationRepo = '2137x/twojstar'
+$attestationRepo = 'enclaro/twojstar'
 
 function Test-IsAdministrator {
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
