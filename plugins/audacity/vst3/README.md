@@ -50,8 +50,8 @@ A Windows host smoke of `Travny Smart Transition` on **Audacity 3.7.9** passes d
 
 Ready-to-copy Auto Declip packages are published in the repository-wide GitHub **Latest** release:
 
-- [Windows x64](https://github.com/twojstar/twojstar/releases/latest/download/audacity-auto-declip-windows.zip)
-- [Linux x64](https://github.com/twojstar/twojstar/releases/latest/download/audacity-auto-declip-linux.zip)
+- [Windows x64](https://github.com/2137x/twojstar/releases/latest/download/audacity-auto-declip-windows.zip)
+- [Linux x64](https://github.com/2137x/twojstar/releases/latest/download/audacity-auto-declip-linux.zip)
 
 Each archive contains the `TravnyAutoDeclip.vst3` bundle plus a tiny `INSTALL.txt`. On Windows x64, copy the `.vst3` bundle to `C:\Program Files\Common Files\VST3`; on Linux, use your standard VST3 plug-in directory. Then rescan effects in Audacity. The repository does not install a background helper and the plug-ins perform no runtime downloads.
 

@@ -369,7 +369,7 @@ jobs:
           published=0
 
           {
-            echo "Rolling snapshot of the latest successful product builds in twojstar/twojstar."
+            echo "Rolling snapshot of the latest successful product builds in 2137x/twojstar."
             echo
             echo "### Downloads"
             echo "- \`benches-portable.zip\` - Codebench, Docbench and Streambench portable builds"
