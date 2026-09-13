@@ -23,8 +23,8 @@ authors:
   - name: mergify[bot]
 identifiers:
   - type: url
-    value: 'https://github.com/2137x'
-repository-code: 'https://github.com/2137x/twojstar'
+    value: 'https://github.com/travnie'
+repository-code: 'https://github.com/travnie/twojstar'
 url: 'https://trfny.com/'
 license: ISC
 version: 0.0.0
