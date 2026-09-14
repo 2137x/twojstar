@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <cstdint>
 #include <iostream>
 #include <limits>
 #include <stdexcept>
@@ -26,8 +27,8 @@ double renderToneRatio(double frequency)
     DeHumDsp dsp;
     dsp.configure(kSampleRate);
 
-    constexpr std::size_t totalSamples = 3 * 48000;
-    constexpr std::size_t measureStart = 2 * 48000;
+    constexpr std::size_t totalSamples = std::size_t{3} * 48000;
+    constexpr std::size_t measureStart = std::size_t{2} * 48000;
     double outputEnergy = 0.0;
     std::size_t measured = 0;
 
@@ -102,6 +103,22 @@ void testResetIsDeterministic()
     require(first == second, "reset did not restore deterministic filter state");
 }
 
+void testReportedTailCoversFilterDecay()
+{
+    DeHumDsp dsp;
+    dsp.configure(kSampleRate);
+    (void)dsp.processSample(1.0);
+
+    const auto tailSamples = DeHumDsp::tailSamplesForRate(kSampleRate);
+    double output = 0.0;
+    for (std::uint32_t i = 0; i < tailSamples; ++i)
+    {
+        output = dsp.processSample(0.0);
+    }
+
+    require(std::abs(output) < 1e-7, "reported de-hum tail ended before filter decay was negligible");
+}
+
 void testInvalidSampleRateFallsBackSafely()
 {
     DeHumDsp dsp;
@@ -119,6 +136,7 @@ int main()
         testMusicBandIsPreserved();
         testNonFiniteSampleDoesNotPoisonState();
         testResetIsDeterministic();
+        testReportedTailCoversFilterDecay();
         testInvalidSampleRateFallsBackSafely();
         std::cout << "DeHum DSP tests passed\n";
         return EXIT_SUCCESS;

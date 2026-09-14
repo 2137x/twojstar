@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstddef>
+#include <cstdint>
 
 namespace Travny::Audio {
 
@@ -10,8 +11,11 @@ class DeHumDsp final
 public:
     static constexpr std::size_t kNotchCount = 6;
     static constexpr double kQuality = 35.0;
+    static constexpr double kTailSeconds = 4.0;
 
     DeHumDsp() noexcept { configure(48000.0); }
+
+    static std::uint32_t tailSamplesForRate(double sampleRate) noexcept;
 
     void configure(double sampleRate) noexcept;
     void reset() noexcept;
@@ -41,7 +45,6 @@ private:
     double processSampleImpl(double input) noexcept;
 
     std::array<Biquad, kNotchCount> filters_{};
-    double sampleRate_ = 48000.0;
 };
 
 } // namespace Travny::Audio

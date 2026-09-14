@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <limits>
 
 namespace Travny::Audio {
 namespace {
@@ -40,15 +41,23 @@ double DeHumDsp::Biquad::process(double input) noexcept
     return output;
 }
 
+std::uint32_t DeHumDsp::tailSamplesForRate(double sampleRate) noexcept
+{
+    const double safeSampleRate = std::isfinite(sampleRate) && sampleRate > 1000.0 ? sampleRate : 48000.0;
+    const double requested = std::ceil(safeSampleRate * kTailSeconds);
+    const double limit = static_cast<double>(std::numeric_limits<std::uint32_t>::max());
+    return static_cast<std::uint32_t>(std::min(requested, limit));
+}
+
 void DeHumDsp::configure(double sampleRate) noexcept
 {
-    sampleRate_ = std::isfinite(sampleRate) && sampleRate > 1000.0 ? sampleRate : 48000.0;
-    const double nyquist = sampleRate_ * 0.5;
+    const double safeSampleRate = std::isfinite(sampleRate) && sampleRate > 1000.0 ? sampleRate : 48000.0;
+    const double nyquist = safeSampleRate * 0.5;
 
     for (std::size_t i = 0; i < filters_.size(); ++i)
     {
         const double frequency = std::min(kHumFrequencies[i], nyquist * 0.45);
-        filters_[i].configureNotch(sampleRate_, frequency, kQuality);
+        filters_[i].configureNotch(safeSampleRate, frequency, kQuality);
     }
 }
 

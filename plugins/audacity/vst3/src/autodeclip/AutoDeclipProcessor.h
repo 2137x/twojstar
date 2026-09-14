@@ -44,6 +44,7 @@ private:
     std::array<Travny::Audio::AutoDeclipDsp, 2> declipDsp_{};
     std::array<Travny::Audio::DeClickDsp, 2> deClickDsp_{};
     std::array<Travny::Audio::DeHumDsp, 2> deHumDsp_{};
+    double sampleRate_ = 48000.0;
 };
 
 } // namespace Travny::Vst3

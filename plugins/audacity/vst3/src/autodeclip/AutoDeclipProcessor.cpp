@@ -53,9 +53,10 @@ Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setupProcessing(Steinberg::Vs
     if (result == Steinberg::kResultOk)
     {
         resetDsp();
+        sampleRate_ = setup.sampleRate;
         for (auto& channel : deHumDsp_)
         {
-            channel.configure(setup.sampleRate);
+            channel.configure(sampleRate_);
         }
     }
     return result;
@@ -99,7 +100,13 @@ Steinberg::uint32 PLUGIN_API AutoDeclipProcessor::getLatencySamples()
 
 Steinberg::uint32 PLUGIN_API AutoDeclipProcessor::getTailSamples()
 {
-    return static_cast<Steinberg::uint32>(Travny::Audio::AutoDeclipDsp::kLatencySamples + Travny::Audio::DeClickDsp::kLatencySamples);
+    const auto pipelineLatency = static_cast<Steinberg::uint64>(
+        Travny::Audio::AutoDeclipDsp::kLatencySamples + Travny::Audio::DeClickDsp::kLatencySamples);
+    const auto deHumTail = static_cast<Steinberg::uint64>(Travny::Audio::DeHumDsp::tailSamplesForRate(sampleRate_));
+    const auto totalTail = pipelineLatency + deHumTail;
+    return totalTail >= Steinberg::Vst::kInfiniteTail
+        ? Steinberg::Vst::kInfiniteTail
+        : static_cast<Steinberg::uint32>(totalTail);
 }
 
 template <typename Sample>
