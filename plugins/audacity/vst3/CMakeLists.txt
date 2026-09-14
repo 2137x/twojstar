@@ -39,6 +39,13 @@ add_library(TravnyDeHumDsp STATIC
 target_include_directories(TravnyDeHumDsp PUBLIC src/autodeclip)
 target_compile_features(TravnyDeHumDsp PUBLIC cxx_std_20)
 
+add_library(TravnyDeNoiseDsp STATIC
+    src/autodeclip/DeNoiseDsp.cpp
+    src/autodeclip/DeNoiseDsp.h
+)
+target_include_directories(TravnyDeNoiseDsp PUBLIC src/autodeclip)
+target_compile_features(TravnyDeNoiseDsp PUBLIC cxx_std_20)
+
 add_library(TravnySmartTransitionDsp STATIC
     src/smarttransition/SmartTransitionDsp.cpp
     src/smarttransition/SmartTransitionDsp.h
@@ -61,6 +68,11 @@ if(BUILD_TESTING)
     target_link_libraries(DeHumDspTests PRIVATE TravnyDeHumDsp)
     target_compile_features(DeHumDspTests PRIVATE cxx_std_20)
     add_test(NAME DeHumDspTests COMMAND DeHumDspTests)
+
+    add_executable(DeNoiseDspTests tests/DeNoiseDspTests.cpp)
+    target_link_libraries(DeNoiseDspTests PRIVATE TravnyDeNoiseDsp)
+    target_compile_features(DeNoiseDspTests PRIVATE cxx_std_20)
+    add_test(NAME DeNoiseDspTests COMMAND DeNoiseDspTests)
 
     add_executable(SmartTransitionDspTests tests/SmartTransitionDspTests.cpp)
     target_link_libraries(SmartTransitionDspTests PRIVATE TravnySmartTransitionDsp)
