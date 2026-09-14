@@ -94,7 +94,7 @@ Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setState(Steinberg::IBStream*
         return Steinberg::kResultFalse;
     }
 
-    Steinberg::IBStreamer streamer(state, Steinberg::kLittleEndian);
+    Steinberg::IBStreamer streamer(state, kLittleEndian);
     Steinberg::int32 savedDenoiseEnabled = 0;
     if (!streamer.readInt32(savedDenoiseEnabled))
     {
@@ -112,7 +112,7 @@ Steinberg::tresult PLUGIN_API AutoDeclipProcessor::getState(Steinberg::IBStream*
         return Steinberg::kResultFalse;
     }
 
-    Steinberg::IBStreamer streamer(state, Steinberg::kLittleEndian);
+    Steinberg::IBStreamer streamer(state, kLittleEndian);
     return streamer.writeInt32(denoiseEnabled_ ? 1 : 0)
         ? Steinberg::kResultOk
         : Steinberg::kResultFalse;

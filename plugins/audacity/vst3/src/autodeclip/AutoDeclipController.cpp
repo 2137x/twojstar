@@ -29,7 +29,7 @@ Steinberg::tresult PLUGIN_API AutoDeclipController::setComponentState(Steinberg:
     {
         return Steinberg::kResultFalse;
     }
-    Steinberg::IBStreamer streamer(state, Steinberg::kLittleEndian);
+    Steinberg::IBStreamer streamer(state, kLittleEndian);
     Steinberg::int32 savedDenoiseEnabled = 0;
     if (!streamer.readInt32(savedDenoiseEnabled))
     {
