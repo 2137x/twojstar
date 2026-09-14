@@ -373,6 +373,19 @@ select {
   white-space: nowrap;
 }
 
+.filename-editable {
+  min-width: 0;
+  border-radius: 6px;
+  cursor: text;
+  outline: none;
+}
+
+.filename-editable:focus {
+  background: var(--surface-raised);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  padding-inline: 4px;
+}
+
 #encoding-label,
 .detail-status,
 .pdf-meta-row,

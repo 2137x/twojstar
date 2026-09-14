@@ -1124,6 +1124,39 @@ dropZone.addEventListener("drop", (event) => {
   void syncFallbackFile(file, revision);
 }, true);
 
+function commitFilenameEdit() {
+  const previousFilename = state.filename;
+  const previousFormat = formatSelect.value;
+  const next = filenameLabel.textContent.trim().replace(/[\\/:*?"<>|]/g, "-");
+  const fallback = `untitled.${preferredExtension[formatSelect.value]}`;
+  state.filename = next || fallback;
+  filenameLabel.textContent = state.filename;
+
+  const filenameChanged = state.filename !== previousFilename;
+  const nextFormat = formatFromFilename(state.filename);
+  const formatChanged = nextFormat !== previousFormat;
+  if (filenameChanged || formatChanged) state.documentRevision += 1;
+  if (filenameChanged) state.handle = null;
+
+  formatSelect.value = nextFormat;
+  updateFormatButton();
+  updateSaveButton();
+  updateMeta();
+  if (formatChanged) schedulePreview(0);
+}
+
+filenameLabel.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    filenameLabel.blur();
+  }
+  if (event.key === "Escape") {
+    event.preventDefault();
+    filenameLabel.textContent = state.filename;
+    filenameLabel.blur();
+  }
+});
+filenameLabel.addEventListener("blur", commitFilenameEdit);
 newButton.addEventListener("click", () => {
   queueMicrotask(() => {
     state.documentRevision += 1;
