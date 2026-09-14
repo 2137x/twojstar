@@ -2,6 +2,7 @@
 
 #include "AutoDeclipCids.h"
 #include "AutoDeclipDsp.h"
+#include "DeClickDsp.h"
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
 #include <array>
@@ -39,7 +40,8 @@ private:
     template <typename Sample>
     bool processBlock(Sample** input, Sample** output, Steinberg::int32 channels, Steinberg::int32 samples) noexcept;
 
-    std::array<Travny::Audio::AutoDeclipDsp, 2> dsp_{};
+    std::array<Travny::Audio::AutoDeclipDsp, 2> declipDsp_{};
+    std::array<Travny::Audio::DeClickDsp, 2> deClickDsp_{};
 };
 
 } // namespace Travny::Vst3
