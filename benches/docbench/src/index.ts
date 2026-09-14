@@ -29,7 +29,7 @@ export default {
       headers.set("cache-control", "no-cache");
       headers.set(
         "link",
-        '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"',
+        '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="alternate"; type="text/plain", </llms.txt>; rel="describedby"',
       );
     }
 

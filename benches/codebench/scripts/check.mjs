@@ -42,8 +42,10 @@ if (!source.includes('const SITE_URL = "https://codebench.trfny.com/";')) {
   throw new Error("Codebench canonical origin is not the custom domain");
 }
 if (!source.includes('rel="alternate" type="text/markdown" href="/index.md"')) throw new Error("Markdown alternate is missing");
+if (!source.includes('rel="alternate" type="text/plain" href="/llms.txt"')) throw new Error("llms.txt alternate discovery link is missing");
 if (!source.includes('rel="describedby" href="/llms.txt"')) throw new Error("llms.txt describedby link is missing");
-if (!source.includes('rel="alternate"; type="text/markdown"') || !source.includes('rel="describedby"')) throw new Error("HTTP Link discovery header is missing");
+if (!source.includes('rel="alternate"; type="text/markdown"') || !source.includes('type="text/plain"') || !source.includes('rel="describedby"')) throw new Error("HTTP Link discovery header is missing");
+if (!source.includes('Content-Signal: ai-train=yes, search=yes, ai-input=yes')) throw new Error("robots Content-Signal policy is missing");
 if (wrangler.assets?.not_found_handling !== "404-page") throw new Error("404 asset handling is missing");
 if (!notFound.includes('name="robots" content="noindex,follow"')) throw new Error("404 page can be indexed");
 if (!llms.includes("https://codebench.trfny.com/index.md")) throw new Error("llms.txt Markdown application URL is missing");

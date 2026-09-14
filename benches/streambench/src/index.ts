@@ -296,7 +296,7 @@ export default {
       const headers = new Headers(response.headers);
       headers.set(
         "link",
-        '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"',
+        '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="alternate"; type="text/plain", </llms.txt>; rel="describedby"',
       );
       return new Response(response.body, {
         status: response.status,
