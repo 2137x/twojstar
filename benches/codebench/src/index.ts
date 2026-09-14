@@ -74,6 +74,7 @@ class InjectHead {
       + '<meta name="apple-mobile-web-app-title" content="Code Bench">'
       + `<link rel="canonical" href="${SITE_URL}">`
       + '<link rel="alternate" type="text/markdown" href="/index.md" title="Code Bench Markdown">'
+      + '<link rel="alternate" type="text/plain" href="/llms.txt" title="Code Bench llms.txt">'
       + '<link rel="describedby" href="/llms.txt" title="Code Bench llms.txt">'
       + '<link rel="icon" type="image/svg+xml" href="/favicon.svg">'
       + '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">'
@@ -135,7 +136,7 @@ export default {
 
     if (url.pathname === "/robots.txt") {
       return textResponse(
-        `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}sitemap.xml\n`,
+        `User-agent: *\nContent-Signal: ai-train=yes, search=yes, ai-input=yes\nAllow: /\nSitemap: ${SITE_URL}sitemap.xml\n`,
         "text/plain; charset=utf-8",
         "public, max-age=86400",
       );
@@ -163,7 +164,7 @@ export default {
     if (asset.ok && type.includes("text/html") && !portable) {
       headers.set(
         "link",
-        '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"',
+        '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="alternate"; type="text/plain", </llms.txt>; rel="describedby"',
       );
     }
     const response = new Response(asset.body, {

@@ -204,6 +204,7 @@ export function renderPage(
 <link rel="alternate" type="application/atom+xml" title="Pogoda — zmiany" href="/feed.atom">
 <link rel="alternate" type="application/atom+xml" title="Ostrzeżenia IMGW" href="/warnings.atom">
 <link rel="alternate" type="text/markdown" href="/index.md" title="Pogoda Chrzanów Markdown">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="Pogoda Chrzanów llms.txt">
 <link rel="describedby" href="/llms.txt" title="Pogoda Chrzanów llms.txt">
 <meta name="description" content="${escapeHtml(description)}">
 <link rel="canonical" href="${escapeHtml(origin)}/">

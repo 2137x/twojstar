@@ -91,6 +91,7 @@ test("weather page advertises its canonical and llms surface", () => {
   const html = renderPage("https://weather.trfny.com");
   assert.match(html, /rel="canonical" href="https:\/\/weather\.trfny\.com\/"/);
   assert.match(html, /rel="alternate" type="text\/markdown" href="\/index\.md"/);
+  assert.match(html, /rel="alternate" type="text\/plain" href="\/llms\.txt"/);
   assert.match(html, /rel="describedby" href="\/llms\.txt"/);
   assert.match(html, /application\/ld\+json/);
   assert.match(html, /href="https:\/\/trfny\.com\/"/);
@@ -111,7 +112,11 @@ test("weather discovery routes do not require storage", async () => {
       {} as Env,
     );
     assert.equal(response.status, 200);
-    assert.ok((await response.text()).includes(canonicalUrl));
+    const body = await response.text();
+    assert.ok(body.includes(canonicalUrl));
+    if (path === "/robots.txt") {
+      assert.match(body, /Content-Signal: ai-train=yes, search=yes, ai-input=yes/);
+    }
   }
 });
 

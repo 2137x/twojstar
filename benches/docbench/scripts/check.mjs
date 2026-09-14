@@ -156,6 +156,13 @@ for (const exportGuard of [
 }
 
 const workerSource = await readFile("src/index.ts", "utf8");
+const wrangler = JSON.parse(await readFile("wrangler.jsonc", "utf8"));
+if (wrangler.assets?.not_found_handling !== "404-page") {
+  throw new Error("Doc Bench must return real 404 responses for unknown paths.");
+}
+if (!workerSource.includes('type="text/plain"')) {
+  throw new Error("Doc Bench HTTP llms.txt alternate discovery header is missing.");
+}
 if (!workerSource.includes('if (asset.ok && headers.get("content-type")?.includes("text/html"))')) {
   throw new Error("Discovery headers must be limited to successful HTML assets.");
 }
@@ -185,8 +192,18 @@ for (const metadataUiGuard of [
 if (!html.includes('rel="alternate" type="text/markdown" href="/index.md"')) {
   throw new Error("Doc Bench Markdown alternate is missing.");
 }
+if (!html.includes('rel="alternate" type="text/plain" href="/llms.txt"')) {
+  throw new Error("Doc Bench llms.txt alternate discovery link is missing.");
+}
 if (!html.includes('rel="describedby" href="/llms.txt"')) {
   throw new Error("Doc Bench llms.txt describedby link is missing.");
+}
+if (!html.includes('application/ld+json')) {
+  throw new Error("Doc Bench JSON-LD metadata is missing.");
+}
+const robots = await readFile("public/robots.txt", "utf8");
+if (!robots.includes("Content-Signal: ai-train=yes, search=yes, ai-input=yes")) {
+  throw new Error("Doc Bench robots Content-Signal policy is missing.");
 }
 const llms = await readFile("public/llms.txt", "utf8");
 const llmsFull = await readFile("public/llms-full.txt", "utf8");

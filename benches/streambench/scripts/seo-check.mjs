@@ -46,10 +46,12 @@ assert(index.includes('<meta name="twitter:card" content="summary_large_image">'
 assert(index.includes("max-image-preview:large"), "crawler preview directives are missing");
 assert(index.includes('<link rel="sitemap" type="application/xml" href="/sitemap.xml">'), "sitemap link is missing");
 assert(index.includes('<link rel="alternate" type="text/markdown" href="/index.md"'), "Markdown alternate is missing");
+assert(index.includes('<link rel="alternate" type="text/plain" href="/llms.txt"'), "llms.txt alternate discovery link is missing");
 assert(index.includes('<link rel="describedby" href="/llms.txt"'), "llms.txt describedby link is missing");
 assert(index.includes('application/ld+json'), "JSON-LD is missing");
 
 assert(robots.includes(`Sitemap: ${origin}/sitemap.xml`), "robots sitemap URL is missing");
+assert(robots.includes("Content-Signal: ai-train=yes, search=yes, ai-input=yes"), "robots Content-Signal policy is missing");
 assert(robots.includes("Disallow: /api/"), "API crawler rule is missing");
 assert(sitemap.includes(`<loc>${origin}/</loc>`), "sitemap application URL is missing");
 assert(llms.includes("# Streambench"), "llms.txt title is missing");

@@ -17,7 +17,7 @@ const SITE_ORIGIN = "https://weather.trfny.com";
 const SITE_HOST = new URL(SITE_ORIGIN).hostname;
 const WORKERS_HOST = "weather.travny.workers.dev";
 
-const ROBOTS = `User-agent: *\nAllow: /\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`;
+const ROBOTS = `User-agent: *\nContent-Signal: ai-train=yes, search=yes, ai-input=yes\nAllow: /\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`;
 const SITEMAP = `<?xml version="1.0" encoding="utf-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${SITE_ORIGIN}/</loc><changefreq>hourly</changefreq><priority>1.0</priority></url>
@@ -347,7 +347,7 @@ export default {
           headers: {
             "content-type": "text/html; charset=utf-8",
             "cache-control": "public, max-age=300, stale-while-revalidate=600",
-            "link": '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"',
+            "link": '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="alternate"; type="text/plain", </llms.txt>; rel="describedby"',
           },
         });
       }
