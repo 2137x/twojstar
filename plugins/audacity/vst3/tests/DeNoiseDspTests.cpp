@@ -24,10 +24,10 @@ void require(bool condition, const char* message)
 
 struct NoiseSource
 {
-    std::uint32_t state = 0x12345678u;
+    std::uint32_t state = 0x12345678U;
     double next() noexcept
     {
-        state = state * 1664525u + 1013904223u;
+        state = state * 1664525U + 1013904223U;
         const double unit = static_cast<double>(state) / static_cast<double>(UINT32_MAX);
         return unit * 2.0 - 1.0;
     }
@@ -153,6 +153,15 @@ void testNonFiniteSampleDoesNotPoisonState()
     const double nan = std::numeric_limits<double>::quiet_NaN();
     require(std::isnan(dsp.processSample(nan)), "non-finite denoise input should pass through locally");
     require(std::isfinite(dsp.processSample(0.0)), "non-finite denoise input poisoned state");
+
+    const double infinity = std::numeric_limits<double>::infinity();
+    require(dsp.processSample(infinity) == infinity, "positive infinity denoise input should pass through locally");
+    require(std::isfinite(dsp.processSample(0.0)), "positive infinity denoise input poisoned state");
+
+    const double negativeInfinity = -infinity;
+    require(dsp.processSample(negativeInfinity) == negativeInfinity,
+            "negative infinity denoise input should pass through locally");
+    require(std::isfinite(dsp.processSample(0.0)), "negative infinity denoise input poisoned state");
 }
 
 } // namespace
