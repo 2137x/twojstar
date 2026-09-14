@@ -1,0 +1,44 @@
+name: Docbench style review fix
+
+on:
+  push:
+    branches:
+      - feat/docbench-filename
+    paths:
+      - .github/workflows/docbench-style-review-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Apply style review fix
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path("benches/docbench/public/styles.css")
+          source = path.read_text(encoding="utf-8")
+          old = "box-shadow: 0 0 0 1px var(--border-strong);"
+          new = "box-shadow: 0 0 0 1px var(--line-strong);"
+          if source.count(old) != 1:
+              raise SystemExit(f"Expected exactly one undefined variable use, found {source.count(old)}")
+          path.write_text(source.replace(old, new, 1), encoding="utf-8")
+
+      - name: Validate and commit
+        run: |
+          test "$(grep -c '^\.filename-editable {' benches/docbench/public/styles.css)" -eq 1
+          test "$(grep -c '^\.filename-editable:focus {' benches/docbench/public/styles.css)" -eq 1
+          ! grep -q -- '--border-strong' benches/docbench/public/styles.css
+          rm .github/workflows/docbench-style-review-fix.yml
+          git config user.name GPTomek
+          git config user.email '314538226+gptomek[bot]@users.noreply.github.com'
+          git add benches/docbench/public/styles.css .github/workflows/docbench-style-review-fix.yml
+          git commit -m 'fix(docbench): use defined focus border token'
+          git push
