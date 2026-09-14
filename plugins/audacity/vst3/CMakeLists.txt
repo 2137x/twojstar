@@ -62,6 +62,11 @@ if(BUILD_TESTING)
     target_compile_features(DeHumDspTests PRIVATE cxx_std_20)
     add_test(NAME DeHumDspTests COMMAND DeHumDspTests)
 
+    add_executable(DeNoiseDspTests tests/DeNoiseDspTests.cpp)
+    target_include_directories(DeNoiseDspTests PRIVATE src/autodeclip)
+    target_compile_features(DeNoiseDspTests PRIVATE cxx_std_20)
+    add_test(NAME DeNoiseDspTests COMMAND DeNoiseDspTests)
+
     add_executable(SmartTransitionDspTests tests/SmartTransitionDspTests.cpp)
     target_link_libraries(SmartTransitionDspTests PRIVATE TravnySmartTransitionDsp)
     target_compile_features(SmartTransitionDspTests PRIVATE cxx_std_20)

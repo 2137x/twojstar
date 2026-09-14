@@ -54,7 +54,7 @@ jobs:
       - name: Configure VST3
         run: cmake -S plugins/audacity/vst3 -B plugins/audacity/vst3/build-sdk -DVST3_SDK_ROOT="${{ github.workspace }}/vst3sdk" -DBUILD_TESTING=ON -DSMTG_CREATE_PLUGIN_LINK=OFF
       - name: Build VST3 effects and DSP tests
-        run: cmake --build plugins/audacity/vst3/build-sdk --config Release --target TravnyAutoDeclip TravnySmartTransition AutoDeclipDspTests DeClickDspTests DeHumDspTests SmartTransitionDspTests
+        run: cmake --build plugins/audacity/vst3/build-sdk --config Release --target TravnyAutoDeclip TravnySmartTransition AutoDeclipDspTests DeClickDspTests DeHumDspTests DeNoiseDspTests SmartTransitionDspTests
       - name: Run DSP tests in SDK build
         run: ctest --test-dir plugins/audacity/vst3/build-sdk -C Release --output-on-failure
 
