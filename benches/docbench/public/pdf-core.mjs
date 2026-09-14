@@ -446,7 +446,12 @@ function supportedPdfaConformance(xml, PDFLib) {
 function attachmentPdfaConformance(xml, PDFLib) {
   const parsed = supportedPdfaConformance(xml, PDFLib);
   if (parsed) return parsed;
-  if (!xml || !xml.includes(PDFA_NAMESPACE)) return null;
+  if (!xml) return null;
+  const hasPdfaNamespaceDeclaration = new RegExp(
+    String.raw`\bxmlns(?::[A-Za-z_][\w.-]*)?\s*=\s*["']${escapeRegex(PDFA_NAMESPACE)}["']`,
+    "i"
+  ).test(xml);
+  if (!hasPdfaNamespaceDeclaration) return null;
 
   const readField = (localName) => {
     for (const prefix of namespacePrefixes(xml, PDFA_NAMESPACE)) {
