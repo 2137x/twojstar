@@ -4,18 +4,19 @@ Cross-platform VST3 **audio effects** aimed first at Audacity and usable in othe
 
 ## Auto Declip 0.1
 
-The first released effect is intentionally conservative. It repairs short full-scale clipping plateaus without pretending that severely missing audio can be recovered by a magic button.
+The first released effect is intentionally conservative. Its repair pipeline handles short full-scale clipping plateaus and isolated single-sample impulse clicks without pretending that severely missing audio can be recovered by a magic button.
 
 Current detector/repair rules:
 
 - clipping threshold: `|sample| >= 0.995`,
 - repair only consecutive runs of **2–32 samples**,
-- isolated full-scale samples are preserved as possible legitimate transients,
+- the declipping stage preserves isolated full-scale samples unless the de-click stage sees strong smooth-context evidence for a one-sample impulse,
+- de-click requires two smooth context samples on each side and leaves multi-sample transients alone,
 - longer clipping is preserved for a future stronger restoration stage,
 - clean audio is passed through unchanged after the fixed lookahead,
 - repaired runs are reconstructed between clean edges with a bounded peak-shaped interpolation,
 - output is capped just below full scale,
-- fixed **64-sample latency**, reported to the VST3 host,
+- fixed **66-sample pipeline latency** (64 declip + 2 de-click), reported to the VST3 host,
 - mono and stereo, 32-bit and 64-bit floating-point processing,
 - fixed memory only in the audio path; no allocations, files, network or model loading.
 

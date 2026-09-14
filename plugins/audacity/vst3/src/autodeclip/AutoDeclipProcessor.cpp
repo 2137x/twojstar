@@ -27,7 +27,11 @@ Steinberg::tresult PLUGIN_API AutoDeclipProcessor::initialize(Steinberg::FUnknow
 
 void AutoDeclipProcessor::resetDsp() noexcept
 {
-    for (auto& channel : dsp_)
+    for (auto& channel : declipDsp_)
+    {
+        channel.reset();
+    }
+    for (auto& channel : deClickDsp_)
     {
         channel.reset();
     }
@@ -78,12 +82,12 @@ Steinberg::tresult PLUGIN_API AutoDeclipProcessor::canProcessSampleSize(Steinber
 
 Steinberg::uint32 PLUGIN_API AutoDeclipProcessor::getLatencySamples()
 {
-    return static_cast<Steinberg::uint32>(Travny::Audio::AutoDeclipDsp::kLatencySamples);
+    return static_cast<Steinberg::uint32>(Travny::Audio::AutoDeclipDsp::kLatencySamples + Travny::Audio::DeClickDsp::kLatencySamples);
 }
 
 Steinberg::uint32 PLUGIN_API AutoDeclipProcessor::getTailSamples()
 {
-    return static_cast<Steinberg::uint32>(Travny::Audio::AutoDeclipDsp::kLatencySamples);
+    return static_cast<Steinberg::uint32>(Travny::Audio::AutoDeclipDsp::kLatencySamples + Travny::Audio::DeClickDsp::kLatencySamples);
 }
 
 template <typename Sample>
@@ -94,14 +98,16 @@ bool AutoDeclipProcessor::processBlock(
     Steinberg::int32 samples) noexcept
 {
     bool allSilent = true;
-    const auto channelCount = std::min<Steinberg::int32>(channels, static_cast<Steinberg::int32>(dsp_.size()));
+    const auto channelCount = std::min<Steinberg::int32>(channels, static_cast<Steinberg::int32>(declipDsp_.size()));
     for (Steinberg::int32 channel = 0; channel < channelCount; ++channel)
     {
         auto* in = input[channel];
         auto* out = output[channel];
         for (Steinberg::int32 sample = 0; sample < samples; ++sample)
         {
-            const auto value = dsp_[static_cast<std::size_t>(channel)].processSample(in[sample]);
+            const auto channelIndex = static_cast<std::size_t>(channel);
+            const auto declipped = declipDsp_[channelIndex].processSample(in[sample]);
+            const auto value = deClickDsp_[channelIndex].processSample(declipped);
             out[sample] = value;
             allSilent = allSilent && value == static_cast<Sample>(0);
         }
