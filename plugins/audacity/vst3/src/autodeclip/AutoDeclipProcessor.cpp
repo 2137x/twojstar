@@ -35,6 +35,10 @@ void AutoDeclipProcessor::resetDsp() noexcept
     {
         channel.reset();
     }
+    for (auto& channel : deHumDsp_)
+    {
+        channel.reset();
+    }
 }
 
 Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setActive(Steinberg::TBool state)
@@ -45,8 +49,17 @@ Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setActive(Steinberg::TBool st
 
 Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setupProcessing(Steinberg::Vst::ProcessSetup& setup)
 {
-    resetDsp();
-    return AudioEffect::setupProcessing(setup);
+    const auto result = AudioEffect::setupProcessing(setup);
+    if (result == Steinberg::kResultOk)
+    {
+        resetDsp();
+        sampleRate_ = setup.sampleRate;
+        for (auto& channel : deHumDsp_)
+        {
+            channel.configure(sampleRate_);
+        }
+    }
+    return result;
 }
 
 Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setBusArrangements(
@@ -87,7 +100,13 @@ Steinberg::uint32 PLUGIN_API AutoDeclipProcessor::getLatencySamples()
 
 Steinberg::uint32 PLUGIN_API AutoDeclipProcessor::getTailSamples()
 {
-    return static_cast<Steinberg::uint32>(Travny::Audio::AutoDeclipDsp::kLatencySamples + Travny::Audio::DeClickDsp::kLatencySamples);
+    const auto pipelineLatency = static_cast<Steinberg::uint64>(
+        Travny::Audio::AutoDeclipDsp::kLatencySamples + Travny::Audio::DeClickDsp::kLatencySamples);
+    const auto deHumTail = static_cast<Steinberg::uint64>(Travny::Audio::DeHumDsp::tailSamplesForRate(sampleRate_));
+    const auto totalTail = pipelineLatency + deHumTail;
+    return totalTail >= Steinberg::Vst::kInfiniteTail
+        ? Steinberg::Vst::kInfiniteTail
+        : static_cast<Steinberg::uint32>(totalTail);
 }
 
 template <typename Sample>
@@ -107,7 +126,8 @@ bool AutoDeclipProcessor::processBlock(
         {
             const auto channelIndex = static_cast<std::size_t>(channel);
             const auto declipped = declipDsp_[channelIndex].processSample(in[sample]);
-            const auto value = deClickDsp_[channelIndex].processSample(declipped);
+            const auto deClicked = deClickDsp_[channelIndex].processSample(declipped);
+            const auto value = deHumDsp_[channelIndex].processSample(deClicked);
             out[sample] = value;
             allSilent = allSilent && value == static_cast<Sample>(0);
         }
