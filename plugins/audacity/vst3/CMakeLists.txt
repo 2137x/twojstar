@@ -74,6 +74,11 @@ if(BUILD_TESTING)
     target_compile_features(DeNoiseDspTests PRIVATE cxx_std_20)
     add_test(NAME DeNoiseDspTests COMMAND DeNoiseDspTests)
 
+    add_executable(AutoDeclipParameterStateTests tests/AutoDeclipParameterStateTests.cpp)
+    target_include_directories(AutoDeclipParameterStateTests PRIVATE src/autodeclip)
+    target_compile_features(AutoDeclipParameterStateTests PRIVATE cxx_std_20)
+    add_test(NAME AutoDeclipParameterStateTests COMMAND AutoDeclipParameterStateTests)
+
     add_executable(SmartTransitionDspTests tests/SmartTransitionDspTests.cpp)
     target_link_libraries(SmartTransitionDspTests PRIVATE TravnySmartTransitionDsp)
     target_compile_features(SmartTransitionDspTests PRIVATE cxx_std_20)
