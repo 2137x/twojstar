@@ -15,7 +15,7 @@ Current detector/repair rules:
 - longer clipping is preserved for a future stronger restoration stage,
 - de-hum uses narrow Q=35 notches at 50/60 Hz plus 100/120 and 150/180 Hz harmonics,
 - de-hum adds no algorithmic latency and resets its filter state after a non-finite sample,
-- audio outside the narrow repair bands remains effectively transparent; the broadband de-noise core remains opt-in/prototype and is not wired into the released processing chain yet,
+- audio outside the narrow repair bands remains effectively transparent; broadband `Denoise` is exported as an explicit VST3 on/off parameter and defaults to **Off**,
 - repaired runs are reconstructed between clean edges with a bounded peak-shaped interpolation,
 - output is capped just below full scale,
 - fixed **66-sample pipeline latency** (64 declip + 2 de-click), reported to the VST3 host,
@@ -24,7 +24,7 @@ Current detector/repair rules:
 
 ### De-noise core prototype
 
-`DeNoiseDsp` is a separate conservative broadband downward expander for low-level stationary noise. It uses fixed-memory envelope/gain smoothing, has no algorithmic latency, never hard-mutes the floor, and resets safely after non-finite input. It is intentionally **not enabled in the Auto Declip processing chain yet**; exposing it requires an explicit host control so quiet ambience and reverb tails are not altered without user intent.
+`DeNoiseDsp` is a separate conservative broadband downward expander for low-level stationary noise. It uses fixed-memory envelope/gain smoothing, has no algorithmic latency, never hard-mutes the floor, and resets safely after non-finite input. It is wired behind the explicit `Denoise` VST3 parameter, defaults to **Off**, and the selected state is stored with the host project/preset. Quiet ambience and reverb tails are therefore not altered unless the user enables broadband repair.
 
 ## Smart Transition 0.1 prototype
 

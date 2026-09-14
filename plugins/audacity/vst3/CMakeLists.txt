@@ -74,6 +74,11 @@ if(BUILD_TESTING)
     target_compile_features(DeNoiseDspTests PRIVATE cxx_std_20)
     add_test(NAME DeNoiseDspTests COMMAND DeNoiseDspTests)
 
+    add_executable(AutoDeclipParameterStateTests tests/AutoDeclipParameterStateTests.cpp)
+    target_include_directories(AutoDeclipParameterStateTests PRIVATE src/autodeclip)
+    target_compile_features(AutoDeclipParameterStateTests PRIVATE cxx_std_20)
+    add_test(NAME AutoDeclipParameterStateTests COMMAND AutoDeclipParameterStateTests)
+
     add_executable(SmartTransitionDspTests tests/SmartTransitionDspTests.cpp)
     target_link_libraries(SmartTransitionDspTests PRIVATE TravnySmartTransitionDsp)
     target_compile_features(SmartTransitionDspTests PRIVATE cxx_std_20)
@@ -102,7 +107,10 @@ smtg_enable_vst3_sdk()
 
 smtg_add_vst3plugin(TravnyAutoDeclip
     src/autodeclip/AutoDeclipCids.h
+    src/autodeclip/AutoDeclipController.cpp
     src/autodeclip/AutoDeclipController.h
+    src/autodeclip/AutoDeclipParameterState.h
+    src/autodeclip/AutoDeclipParams.h
     src/autodeclip/AutoDeclipEntry.cpp
     src/autodeclip/AutoDeclipProcessor.cpp
     src/autodeclip/AutoDeclipProcessor.h
@@ -110,7 +118,7 @@ smtg_add_vst3plugin(TravnyAutoDeclip
 
 target_include_directories(TravnyAutoDeclip PRIVATE src/autodeclip)
 target_compile_features(TravnyAutoDeclip PRIVATE cxx_std_20)
-target_link_libraries(TravnyAutoDeclip PRIVATE sdk TravnyAutoDeclipDsp TravnyDeClickDsp TravnyDeHumDsp)
+target_link_libraries(TravnyAutoDeclip PRIVATE sdk TravnyAutoDeclipDsp TravnyDeClickDsp TravnyDeHumDsp TravnyDeNoiseDsp)
 
 smtg_add_vst3plugin(TravnySmartTransition
     src/smarttransition/SmartTransitionCids.h

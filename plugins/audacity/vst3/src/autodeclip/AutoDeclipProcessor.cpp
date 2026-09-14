@@ -1,6 +1,9 @@
 #include "AutoDeclipProcessor.h"
 
+#include "AutoDeclipParams.h"
+#include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
+#include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/vst/vstspeaker.h"
 
 #include <algorithm>
@@ -39,8 +42,81 @@ void AutoDeclipProcessor::resetDsp() noexcept
     {
         channel.reset();
     }
+    for (auto& channel : deNoiseDsp_)
+    {
+        channel.reset();
+    }
 }
 
+void AutoDeclipProcessor::setDenoiseEnabled(bool enabled) noexcept
+{
+    if (denoiseEnabled_ == enabled)
+    {
+        return;
+    }
+
+    denoiseEnabled_ = enabled;
+    for (auto& channel : deNoiseDsp_)
+    {
+        channel.reset();
+    }
+}
+
+void AutoDeclipProcessor::applyParameterChanges(Steinberg::Vst::IParameterChanges* changes) noexcept
+{
+    if (!changes)
+    {
+        return;
+    }
+
+    const auto parameterCount = changes->getParameterCount();
+    for (Steinberg::int32 index = 0; index < parameterCount; ++index)
+    {
+        auto* queue = changes->getParameterData(index);
+        if (!queue || queue->getParameterId() != kDenoiseEnabledId || queue->getPointCount() <= 0)
+        {
+            continue;
+        }
+
+        Steinberg::int32 sampleOffset = 0;
+        Steinberg::Vst::ParamValue value = 0.0;
+        if (queue->getPoint(queue->getPointCount() - 1, sampleOffset, value) == Steinberg::kResultTrue)
+        {
+            setDenoiseEnabled(Travny::Audio::denoiseEnabledFromNormalized(value));
+        }
+    }
+}
+
+Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setState(Steinberg::IBStream* state)
+{
+    if (!state)
+    {
+        return Steinberg::kResultFalse;
+    }
+
+    Steinberg::IBStreamer streamer(state, kLittleEndian);
+    Steinberg::int32 savedDenoiseEnabled = 0;
+    if (!streamer.readInt32(savedDenoiseEnabled))
+    {
+        setDenoiseEnabled(false);
+        return Steinberg::kResultOk;
+    }
+    setDenoiseEnabled(savedDenoiseEnabled != 0);
+    return Steinberg::kResultOk;
+}
+
+Steinberg::tresult PLUGIN_API AutoDeclipProcessor::getState(Steinberg::IBStream* state)
+{
+    if (!state)
+    {
+        return Steinberg::kResultFalse;
+    }
+
+    Steinberg::IBStreamer streamer(state, kLittleEndian);
+    return streamer.writeInt32(denoiseEnabled_ ? 1 : 0)
+        ? Steinberg::kResultOk
+        : Steinberg::kResultFalse;
+}
 Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setActive(Steinberg::TBool state)
 {
     resetDsp();
@@ -55,6 +131,10 @@ Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setupProcessing(Steinberg::Vs
         resetDsp();
         sampleRate_ = setup.sampleRate;
         for (auto& channel : deHumDsp_)
+        {
+            channel.configure(sampleRate_);
+        }
+        for (auto& channel : deNoiseDsp_)
         {
             channel.configure(sampleRate_);
         }
@@ -127,7 +207,10 @@ bool AutoDeclipProcessor::processBlock(
             const auto channelIndex = static_cast<std::size_t>(channel);
             const auto declipped = declipDsp_[channelIndex].processSample(in[sample]);
             const auto deClicked = deClickDsp_[channelIndex].processSample(declipped);
-            const auto value = deHumDsp_[channelIndex].processSample(deClicked);
+            const auto deHummed = deHumDsp_[channelIndex].processSample(deClicked);
+            const auto value = denoiseEnabled_
+                ? deNoiseDsp_[channelIndex].processSample(deHummed)
+                : deHummed;
             out[sample] = value;
             allSilent = allSilent && value == static_cast<Sample>(0);
         }
@@ -137,6 +220,8 @@ bool AutoDeclipProcessor::processBlock(
 
 Steinberg::tresult PLUGIN_API AutoDeclipProcessor::process(Steinberg::Vst::ProcessData& data)
 {
+    applyParameterChanges(data.inputParameterChanges);
+
     if (data.numInputs == 0 || data.numOutputs == 0 || data.numSamples <= 0)
     {
         return Steinberg::kResultOk;
