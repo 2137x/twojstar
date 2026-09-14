@@ -3,6 +3,7 @@
 #include "AutoDeclipCids.h"
 #include "AutoDeclipDsp.h"
 #include "DeClickDsp.h"
+#include "DeHumDsp.h"
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
 #include <array>
@@ -42,6 +43,7 @@ private:
 
     std::array<Travny::Audio::AutoDeclipDsp, 2> declipDsp_{};
     std::array<Travny::Audio::DeClickDsp, 2> deClickDsp_{};
+    std::array<Travny::Audio::DeHumDsp, 2> deHumDsp_{};
 };
 
 } // namespace Travny::Vst3

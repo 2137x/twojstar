@@ -35,6 +35,10 @@ void AutoDeclipProcessor::resetDsp() noexcept
     {
         channel.reset();
     }
+    for (auto& channel : deHumDsp_)
+    {
+        channel.reset();
+    }
 }
 
 Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setActive(Steinberg::TBool state)
@@ -45,8 +49,16 @@ Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setActive(Steinberg::TBool st
 
 Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setupProcessing(Steinberg::Vst::ProcessSetup& setup)
 {
-    resetDsp();
-    return AudioEffect::setupProcessing(setup);
+    const auto result = AudioEffect::setupProcessing(setup);
+    if (result == Steinberg::kResultOk)
+    {
+        resetDsp();
+        for (auto& channel : deHumDsp_)
+        {
+            channel.configure(setup.sampleRate);
+        }
+    }
+    return result;
 }
 
 Steinberg::tresult PLUGIN_API AutoDeclipProcessor::setBusArrangements(
@@ -107,7 +119,8 @@ bool AutoDeclipProcessor::processBlock(
         {
             const auto channelIndex = static_cast<std::size_t>(channel);
             const auto declipped = declipDsp_[channelIndex].processSample(in[sample]);
-            const auto value = deClickDsp_[channelIndex].processSample(declipped);
+            const auto deClicked = deClickDsp_[channelIndex].processSample(declipped);
+            const auto value = deHumDsp_[channelIndex].processSample(deClicked);
             out[sample] = value;
             allSilent = allSilent && value == static_cast<Sample>(0);
         }

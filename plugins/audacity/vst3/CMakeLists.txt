@@ -32,6 +32,13 @@ add_library(TravnyDeClickDsp STATIC
 target_include_directories(TravnyDeClickDsp PUBLIC src/autodeclip)
 target_compile_features(TravnyDeClickDsp PUBLIC cxx_std_20)
 
+add_library(TravnyDeHumDsp STATIC
+    src/autodeclip/DeHumDsp.cpp
+    src/autodeclip/DeHumDsp.h
+)
+target_include_directories(TravnyDeHumDsp PUBLIC src/autodeclip)
+target_compile_features(TravnyDeHumDsp PUBLIC cxx_std_20)
+
 add_library(TravnySmartTransitionDsp STATIC
     src/smarttransition/SmartTransitionDsp.cpp
     src/smarttransition/SmartTransitionDsp.h
@@ -49,6 +56,11 @@ if(BUILD_TESTING)
     target_link_libraries(DeClickDspTests PRIVATE TravnyDeClickDsp)
     target_compile_features(DeClickDspTests PRIVATE cxx_std_20)
     add_test(NAME DeClickDspTests COMMAND DeClickDspTests)
+
+    add_executable(DeHumDspTests tests/DeHumDspTests.cpp)
+    target_link_libraries(DeHumDspTests PRIVATE TravnyDeHumDsp)
+    target_compile_features(DeHumDspTests PRIVATE cxx_std_20)
+    add_test(NAME DeHumDspTests COMMAND DeHumDspTests)
 
     add_executable(SmartTransitionDspTests tests/SmartTransitionDspTests.cpp)
     target_link_libraries(SmartTransitionDspTests PRIVATE TravnySmartTransitionDsp)
@@ -86,7 +98,7 @@ smtg_add_vst3plugin(TravnyAutoDeclip
 
 target_include_directories(TravnyAutoDeclip PRIVATE src/autodeclip)
 target_compile_features(TravnyAutoDeclip PRIVATE cxx_std_20)
-target_link_libraries(TravnyAutoDeclip PRIVATE sdk TravnyAutoDeclipDsp TravnyDeClickDsp)
+target_link_libraries(TravnyAutoDeclip PRIVATE sdk TravnyAutoDeclipDsp TravnyDeClickDsp TravnyDeHumDsp)
 
 smtg_add_vst3plugin(TravnySmartTransition
     src/smarttransition/SmartTransitionCids.h

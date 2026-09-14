@@ -4,7 +4,7 @@ Cross-platform VST3 **audio effects** aimed first at Audacity and usable in othe
 
 ## Auto Declip 0.1
 
-The first released effect is intentionally conservative. Its repair pipeline handles short full-scale clipping plateaus and isolated single-sample impulse clicks without pretending that severely missing audio can be recovered by a magic button.
+The first released effect is intentionally conservative. Its repair pipeline handles short full-scale clipping plateaus, isolated single-sample impulse clicks, and narrow mains hum without pretending that severely missing audio can be recovered by a magic button.
 
 Current detector/repair rules:
 
@@ -13,7 +13,9 @@ Current detector/repair rules:
 - the declipping stage preserves isolated full-scale samples unless the de-click stage sees strong smooth-context evidence for a one-sample impulse,
 - de-click requires two smooth context samples on each side and leaves multi-sample transients alone,
 - longer clipping is preserved for a future stronger restoration stage,
-- clean audio is passed through unchanged after the fixed lookahead,
+- de-hum uses narrow Q=35 notches at 50/60 Hz plus 100/120 and 150/180 Hz harmonics,
+- de-hum adds no algorithmic latency and resets its filter state after a non-finite sample,
+- audio outside the narrow repair bands remains effectively transparent; there is no broad denoise stage yet,
 - repaired runs are reconstructed between clean edges with a bounded peak-shaped interpolation,
 - output is capped just below full scale,
 - fixed **66-sample pipeline latency** (64 declip + 2 de-click), reported to the VST3 host,
