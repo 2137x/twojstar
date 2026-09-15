@@ -18,7 +18,7 @@ Steinberg::tresult PLUGIN_API AutoDeclipController::initialize(Steinberg::FUnkno
         nullptr,
         1,
         0.0,
-        0,
+        Steinberg::Vst::ParameterInfo::kCanAutomate,
         kDenoiseEnabledId);
     return Steinberg::kResultOk;
 }
