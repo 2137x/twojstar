@@ -13,13 +13,20 @@ int main()
         return EXIT_FAILURE;
     }
 
-    Steinberg::Vst::ParameterInfo info{};
-    const auto result = controller.getParameterInfo(0, info);
-    const bool visibleAutomatableToggle =
-        result == Steinberg::kResultOk &&
-        info.id == Travny::Vst3::kDenoiseEnabledId &&
-        info.stepCount == 1 &&
-        (info.flags & Steinberg::Vst::ParameterInfo::kCanAutomate) != 0;
+    bool visibleAutomatableToggle = false;
+    for (Steinberg::int32 i = 0; i < controller.getParameterCount(); ++i)
+    {
+        Steinberg::Vst::ParameterInfo info{};
+        if (controller.getParameterInfo(i, info) == Steinberg::kResultOk &&
+            info.id == Travny::Vst3::kDenoiseEnabledId)
+        {
+            visibleAutomatableToggle =
+                info.stepCount == 1 &&
+                (info.flags & Steinberg::Vst::ParameterInfo::kCanAutomate) != 0 &&
+                (info.flags & Steinberg::Vst::ParameterInfo::kIsHidden) == 0;
+            break;
+        }
+    }
 
     controller.terminate();
     if (!visibleAutomatableToggle)
