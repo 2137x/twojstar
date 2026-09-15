@@ -120,6 +120,17 @@ target_include_directories(TravnyAutoDeclip PRIVATE src/autodeclip)
 target_compile_features(TravnyAutoDeclip PRIVATE cxx_std_20)
 target_link_libraries(TravnyAutoDeclip PRIVATE sdk TravnyAutoDeclipDsp TravnyDeClickDsp TravnyDeHumDsp TravnyDeNoiseDsp)
 
+if(BUILD_TESTING)
+    add_executable(AutoDeclipControllerTests
+        tests/AutoDeclipControllerTests.cpp
+        src/autodeclip/AutoDeclipController.cpp
+    )
+    target_include_directories(AutoDeclipControllerTests PRIVATE src/autodeclip)
+    target_compile_features(AutoDeclipControllerTests PRIVATE cxx_std_20)
+    target_link_libraries(AutoDeclipControllerTests PRIVATE sdk)
+    add_test(NAME AutoDeclipControllerTests COMMAND AutoDeclipControllerTests)
+endif()
+
 smtg_add_vst3plugin(TravnySmartTransition
     src/smarttransition/SmartTransitionCids.h
     src/smarttransition/SmartTransitionController.h
