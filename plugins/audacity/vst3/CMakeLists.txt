@@ -129,6 +129,16 @@ if(BUILD_TESTING)
     target_compile_features(AutoDeclipControllerTests PRIVATE cxx_std_20)
     target_link_libraries(AutoDeclipControllerTests PRIVATE sdk)
     add_test(NAME AutoDeclipControllerTests COMMAND AutoDeclipControllerTests)
+    add_executable(AutoDeclipStateRoundTripTests
+        tests/AutoDeclipStateRoundTripTests.cpp
+        src/autodeclip/AutoDeclipController.cpp
+        src/autodeclip/AutoDeclipProcessor.cpp
+        ${VST3_SDK_ROOT}/public.sdk/source/common/memorystream.cpp
+    )
+    target_include_directories(AutoDeclipStateRoundTripTests PRIVATE src/autodeclip)
+    target_compile_features(AutoDeclipStateRoundTripTests PRIVATE cxx_std_20)
+    target_link_libraries(AutoDeclipStateRoundTripTests PRIVATE sdk TravnyAutoDeclipDsp TravnyDeClickDsp TravnyDeHumDsp TravnyDeNoiseDsp)
+    add_test(NAME AutoDeclipStateRoundTripTests COMMAND AutoDeclipStateRoundTripTests)
 endif()
 
 smtg_add_vst3plugin(TravnySmartTransition
